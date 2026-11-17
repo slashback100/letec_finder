@@ -65,7 +65,7 @@ def _alerts_mode_options() -> list[SelectOptionDict]:
     ]
 
 
-def _base_schema(regions: list[str], interval: int, token: str) -> vol.Schema:
+def _base_schema(regions: list[str], interval: int) -> vol.Schema:
     return vol.Schema(
         {
             vol.Required(CONF_REGIONS, default=regions): SelectSelector(
@@ -79,9 +79,6 @@ def _base_schema(regions: list[str], interval: int, token: str) -> vol.Schema:
                     mode=NumberSelectorMode.BOX,
                     unit_of_measurement="s",
                 )
-            ),
-            vol.Required(CONF_API_TOKEN, default=token): TextSelector(
-                TextSelectorConfig()
             ),
         }
     )
@@ -261,9 +258,10 @@ class LetecFinderConfigFlow(ConfigFlow, domain=DOMAIN):
         errors: dict[str, str] = {}
         if user_input is not None:
             self._config.update(user_input)
+            self._config.setdefault(CONF_API_TOKEN, DEFAULT_TOKEN)
             error = await _validate_token(
                 self.hass,
-                self._config[CONF_API_TOKEN],
+                self._config.get(CONF_API_TOKEN, DEFAULT_TOKEN),
                 parse_csv(self._config.get(CONF_REGIONS)),
             )
             if error:
@@ -281,7 +279,6 @@ class LetecFinderConfigFlow(ConfigFlow, domain=DOMAIN):
             data_schema=_base_schema(
                 parse_csv(self._config.get(CONF_REGIONS)) or DEFAULT_REGIONS,
                 self._config.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL),
-                self._config.get(CONF_API_TOKEN, DEFAULT_TOKEN),
             ),
             errors=errors,
         )
@@ -376,9 +373,10 @@ class LetecFinderOptionsFlow(OptionsFlow):
         errors: dict[str, str] = {}
         if user_input is not None:
             self._config.update(user_input)
+            self._config.setdefault(CONF_API_TOKEN, DEFAULT_TOKEN)
             error = await _validate_token(
                 self.hass,
-                self._config[CONF_API_TOKEN],
+                self._config.get(CONF_API_TOKEN, DEFAULT_TOKEN),
                 parse_csv(self._config.get(CONF_REGIONS)),
             )
             if error:
@@ -391,7 +389,6 @@ class LetecFinderOptionsFlow(OptionsFlow):
             data_schema=_base_schema(
                 parse_csv(self._config.get(CONF_REGIONS)) or DEFAULT_REGIONS,
                 self._config.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL),
-                self._config.get(CONF_API_TOKEN, DEFAULT_TOKEN),
             ),
             errors=errors,
         )

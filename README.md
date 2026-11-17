@@ -36,14 +36,14 @@ Aller dans `Paramètres` > `Appareils et services` > `Ajouter une intégration`,
 
 ## À propos du jeton API
 
-Le champ `api_token` est pré-rempli avec `token1`. Ce n'est **pas** un secret personnel : c'est la valeur publique utilisée par le site letecfinder.be lui-même.
+Aucun jeton n'est demandé dans l'interface. L'intégration utilise en interne `token1`, la valeur publique employée par le site letecfinder.be.
 
 Toutes les API ne se comportent pas de la même manière :
 
 - `arrets/search.php`, `stopdetail.php`, `stop-schedule.php` et `reports.php` répondent sans en-tête d'authentification.
 - `bus/position` et `bus/lines` renvoient `HTTP 401` sans l'en-tête `Authorization: Bearer token1`.
 
-Le jeton est donc conservé dans la configuration pour ces deux derniers endpoints. Il peut être laissé à sa valeur par défaut.
+Le jeton est donc appliqué automatiquement à ces deux derniers endpoints.
 
 ## Entités créées
 
@@ -59,7 +59,7 @@ Les options sont accessibles depuis l'intégration et reprennent les mêmes éta
 ## Dépannage
 
 - `cannot_connect` : l'API est momentanément indisponible ou injoignable depuis Home Assistant.
-- `invalid_auth` : le jeton configuré est refusé par `bus/position` ou `bus/lines`.
+- `invalid_auth` : l'authentification interne est refusée par `bus/position` ou `bus/lines`.
 - `no_stops_found` : aucun arrêt ne correspond au nom saisi ; essayer un terme plus court.
 - `invalid_stop` : un identifiant d'arrêt sélectionné manuellement est introuvable.
 

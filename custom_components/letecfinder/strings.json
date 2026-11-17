@@ -6,13 +6,11 @@
         "description": "Choisissez les régions TEC à suivre et la fréquence d'interrogation des API.",
         "data": {
           "regions": "Régions",
-          "scan_interval": "Fréquence de rafraîchissement (secondes)",
-          "api_token": "Jeton API"
+          "scan_interval": "Fréquence de rafraîchissement (secondes)"
         },
         "data_description": {
           "regions": "Plusieurs régions peuvent être sélectionnées.",
-          "scan_interval": "Entre 10 et 900 secondes. 30 secondes est une bonne valeur.",
-          "api_token": "Jeton public utilisé par le site letecfinder.be (token1)."
+          "scan_interval": "Entre 10 et 900 secondes. 30 secondes est une bonne valeur."
         }
       },
       "lines": {
@@ -46,7 +44,7 @@
     },
     "error": {
       "cannot_connect": "Connexion impossible à l'API Letec Finder.",
-      "invalid_auth": "Jeton API invalide ou refusé.",
+      "invalid_auth": "Authentification refusée par l'API Letec Finder.",
       "invalid_stop": "Un ou plusieurs identifiants d'arrêt sont introuvables.",
       "no_stops_found": "Aucun arrêt trouvé pour cette recherche."
     }
@@ -58,8 +56,7 @@
         "description": "Modifiez les régions suivies et la fréquence de rafraîchissement.",
         "data": {
           "regions": "Régions",
-          "scan_interval": "Fréquence de rafraîchissement (secondes)",
-          "api_token": "Jeton API"
+          "scan_interval": "Fréquence de rafraîchissement (secondes)"
         }
       },
       "lines": {
@@ -92,7 +89,7 @@
     },
     "error": {
       "cannot_connect": "Connexion impossible à l'API Letec Finder.",
-      "invalid_auth": "Jeton API invalide ou refusé.",
+      "invalid_auth": "Authentification refusée par l'API Letec Finder.",
       "invalid_stop": "Un ou plusieurs identifiants d'arrêt sont introuvables.",
       "no_stops_found": "Aucun arrêt trouvé pour cette recherche."
     }
