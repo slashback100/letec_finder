@@ -1,0 +1,12 @@
+{
+  "domain": "letecfinder",
+  "name": "Letec Finder",
+  "codeowners": [],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://letecfinder.be",
+  "integration_type": "hub",
+  "iot_class": "cloud_polling",
+  "requirements": [],
+  "version": "1.0.0"
+}

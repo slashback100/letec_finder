@@ -1,0 +1,81 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Régions et rafraîchissement",
+        "description": "Choisissez les régions TEC à suivre et la fréquence d'interrogation des API.",
+        "data": {
+          "regions": "Régions",
+          "scan_interval": "Fréquence de rafraîchissement (secondes)",
+          "api_token": "Jeton API"
+        },
+        "data_description": {
+          "regions": "Plusieurs régions peuvent être sélectionnées.",
+          "scan_interval": "Entre 10 et 900 secondes. 30 secondes est une bonne valeur.",
+          "api_token": "Jeton public utilisé par le site letecfinder.be (token1)."
+        }
+      },
+      "lines": {
+        "title": "Lignes à suivre",
+        "description": "Laissez vide pour suivre toutes les lignes des régions choisies. Vous pouvez saisir une ligne absente de la liste.",
+        "data": {
+          "lines": "Lignes (numéros)"
+        }
+      },
+      "stops": {
+        "title": "Arrêts et alertes",
+        "description": "Saisissez les identifiants d'arrêts séparés par des virgules (ex. LJEerno1, LlgLAMBB).",
+        "data": {
+          "stop_ids": "Arrêts suivis (stopId)",
+          "include_alerts": "Activer le capteur d'alertes réseau",
+          "alerts_mode": "Filtrage des alertes",
+          "enrich_buses": "Récupérer le trajet des bus suivis (requêtes supplémentaires)"
+        },
+        "data_description": {
+          "stop_ids": "Le stopId se trouve dans l'URL de la fiche arrêt sur letecfinder.be.",
+          "enrich_buses": "Ajoute tripId et les informations de trajet aux entités de bus, au prix d'appels API supplémentaires."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Connexion impossible à l'API Letec Finder.",
+      "invalid_auth": "Jeton API invalide ou refusé.",
+      "invalid_stop": "Un ou plusieurs identifiants d'arrêt sont introuvables."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Régions et rafraîchissement",
+        "description": "Modifiez les régions suivies et la fréquence de rafraîchissement.",
+        "data": {
+          "regions": "Régions",
+          "scan_interval": "Fréquence de rafraîchissement (secondes)",
+          "api_token": "Jeton API"
+        }
+      },
+      "lines": {
+        "title": "Lignes à suivre",
+        "description": "Laissez vide pour suivre toutes les lignes.",
+        "data": {
+          "lines": "Lignes (numéros)"
+        }
+      },
+      "stops": {
+        "title": "Arrêts et alertes",
+        "description": "Identifiants d'arrêts séparés par des virgules.",
+        "data": {
+          "stop_ids": "Arrêts suivis (stopId)",
+          "include_alerts": "Activer le capteur d'alertes réseau",
+          "alerts_mode": "Filtrage des alertes",
+          "enrich_buses": "Récupérer le trajet des bus suivis"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Connexion impossible à l'API Letec Finder.",
+      "invalid_auth": "Jeton API invalide ou refusé.",
+      "invalid_stop": "Un ou plusieurs identifiants d'arrêt sont introuvables."
+    }
+  }
+}
