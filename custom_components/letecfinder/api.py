@@ -73,6 +73,12 @@ class LetecFinderApiClient:
             raise LetecFinderError("Réponse reports.php inattendue")
         return data
 
+    async def async_search_stops(self, query: str) -> list[dict[str, Any]]:
+        data = await self._get("arrets/search.php", {"q": query})
+        if not isinstance(data, list):
+            raise LetecFinderError("Réponse arrets/search inattendue")
+        return [row for row in data if isinstance(row, dict)]
+
     async def async_get_stop_detail(self, stop_id: str) -> dict[str, Any]:
         data = await self._get("stopdetail.php", {"stopId": stop_id})
         if not isinstance(data, dict):

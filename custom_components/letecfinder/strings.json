@@ -24,23 +24,31 @@
       },
       "stops": {
         "title": "Arrêts et alertes",
-        "description": "Saisissez les identifiants d'arrêts séparés par des virgules (ex. LJEerno1, LlgLAMBB).",
+        "description": "Saisissez le nom de chaque arrêt recherché, un par ligne (ex. Rue Loumaye).",
         "data": {
-          "stop_ids": "Arrêts suivis (stopId)",
+          "stop_queries": "Noms d'arrêts à rechercher",
           "include_alerts": "Activer le capteur d'alertes réseau",
           "alerts_mode": "Filtrage des alertes",
           "enrich_buses": "Récupérer le trajet des bus suivis (requêtes supplémentaires)"
         },
         "data_description": {
-          "stop_ids": "Le stopId se trouve dans l'URL de la fiche arrêt sur letecfinder.be.",
+          "stop_queries": "Les arrêts correspondants seront proposés à l'étape suivante. Laissez vide pour ne suivre aucun arrêt.",
           "enrich_buses": "Ajoute tripId et les informations de trajet aux entités de bus, au prix d'appels API supplémentaires."
+        }
+      },
+      "stop_select": {
+        "title": "Choisir les arrêts",
+        "description": "Sélectionnez les arrêts à suivre parmi les résultats de recherche.",
+        "data": {
+          "stop_ids": "Arrêts trouvés"
         }
       }
     },
     "error": {
       "cannot_connect": "Connexion impossible à l'API Letec Finder.",
       "invalid_auth": "Jeton API invalide ou refusé.",
-      "invalid_stop": "Un ou plusieurs identifiants d'arrêt sont introuvables."
+      "invalid_stop": "Un ou plusieurs identifiants d'arrêt sont introuvables.",
+      "no_stops_found": "Aucun arrêt trouvé pour cette recherche."
     }
   },
   "options": {
@@ -63,19 +71,30 @@
       },
       "stops": {
         "title": "Arrêts et alertes",
-        "description": "Identifiants d'arrêts séparés par des virgules.",
+        "description": "Saisissez le nom de chaque arrêt recherché, un par ligne (ex. Rue Loumaye).",
         "data": {
-          "stop_ids": "Arrêts suivis (stopId)",
+          "stop_queries": "Noms d'arrêts à rechercher",
           "include_alerts": "Activer le capteur d'alertes réseau",
           "alerts_mode": "Filtrage des alertes",
           "enrich_buses": "Récupérer le trajet des bus suivis"
+        },
+        "data_description": {
+          "stop_queries": "Les arrêts correspondants seront proposés à l'étape suivante. Laissez vide pour conserver les arrêts actuels."
+        }
+      },
+      "stop_select": {
+        "title": "Choisir les arrêts",
+        "description": "Sélectionnez les arrêts à suivre parmi les résultats de recherche.",
+        "data": {
+          "stop_ids": "Arrêts trouvés"
         }
       }
     },
     "error": {
       "cannot_connect": "Connexion impossible à l'API Letec Finder.",
       "invalid_auth": "Jeton API invalide ou refusé.",
-      "invalid_stop": "Un ou plusieurs identifiants d'arrêt sont introuvables."
+      "invalid_stop": "Un ou plusieurs identifiants d'arrêt sont introuvables.",
+      "no_stops_found": "Aucun arrêt trouvé pour cette recherche."
     }
   }
 }
