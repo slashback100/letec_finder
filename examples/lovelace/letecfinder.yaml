@@ -20,8 +20,12 @@
 
     - type: custom:map-card
       title: Itinéraires des bus suivis
+      'x': 50.6
+      'y': 5.45
+      zoom: 10
       entities:
-        - entity: sensor.letec_finder_itineraire
+        - entity: sensor.letec_finder_itineraires
+          focus_on_fit: false
           geojson:
             attribute: geojson
             color: "#1565c0"

@@ -168,8 +168,9 @@ class LetecFinderCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 if not isinstance(trip, dict):
                     _LOGGER.debug("Direction indisponible pour %s : %s", bus["tripId"], trip)
                     continue
-                line = str(
-                    bus.get("route_short_name") or bus.get("route_long_name") or ""
+                line = (
+                    f"{bus.get('route_short_name') or ''} "
+                    f"{bus.get('route_long_name') or ''}"
                 ).strip()
                 direction = trip.get("direction")
                 try:

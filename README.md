@@ -56,9 +56,11 @@ Le jeton est donc appliqué automatiquement à ces deux derniers endpoints.
 
 ## Affichage des itinéraires
 
-L'API `itineraire.php` renvoie des points `[longitude, latitude]` dans `geometry.paths`. L'intégration les convertit en GeoJSON (avec simplification des tracés), met le résultat en cache une seule fois par ligne et par direction, puis l'expose dans l'attribut `geojson` du capteur `Itinéraires`.
+L'API `itineraire.php` renvoie des points `[longitude, latitude]` dans `geometry.paths`. L'intégration les convertit en GeoJSON (avec simplification des tracés), met le résultat en cache une seule fois par ligne et par direction, puis l'expose dans l'attribut `geojson` du capteur `Itinéraires`. Le paramètre `ligne` doit contenir le numéro **et** le nom long de la ligne (comme le fait le site) : avec le numéro seul, un même numéro peut renvoyer le tracé d'une autre région.
 
 La carte `map` native de Home Assistant ne sait pas dessiner de polylignes. Pour afficher les tracés, utiliser la carte custom [map-card](https://github.com/nathan-gs/ha-map-card) (`type: custom:map-card`) avec un exemple dans `examples/lovelace/letecfinder.yaml`.
+
+Le capteur `Itinéraires` n'a pas de latitude/longitude : dans sa configuration `entities`, renseigner `geojson.hide_marker: true` **et** `focus_on_fit: false` (sinon map-card cherche une position pour cadrer la carte), puis définir le centre avec `x` (latitude) et `y` (longitude) au niveau de la carte, ainsi que `zoom`. Attention : dans le code de map-card, `x` est la latitude et `y` la longitude (contrairement à sa documentation) ; mettre ces valeurs à l'envers centre la carte dans l'océan. Les clés `x` et `y` doivent être entourées de guillemets : en YAML, `y` nu est interprété comme `true` par Home Assistant.
 
 ## Options
 
