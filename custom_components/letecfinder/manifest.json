@@ -1,10 +1,11 @@
 {
   "domain": "letecfinder",
   "name": "Letec Finder",
-  "codeowners": [],
+  "codeowners": ["@slashback100"],
   "config_flow": true,
   "dependencies": [],
   "documentation": "https://letecfinder.be",
+  "issue_tracker": "https://github.com/slashback100/letec_finder/issues",
   "integration_type": "hub",
   "iot_class": "cloud_polling",
   "requirements": [],
