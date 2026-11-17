@@ -147,32 +147,29 @@ class LetecFinderCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         routes: dict[str, Any] = {"type": "FeatureCollection", "features": []}
         if enrich and buses:
             enriched = buses[:MAX_BUS_DETAILS]
-            trip_buses = [bus for bus in enriched if bus.get("tripId")]
-            bus_details, trip_infos = await asyncio.gather(
-                self.client.async_get_buses(
-                    [str(bus["vehicleId"]) for bus in enriched]
-                ),
-                asyncio.gather(
-                    *(
-                        self.client.async_get_trip(str(bus["tripId"]))
-                        for bus in trip_buses
-                    ),
-                    return_exceptions=True,
-                ),
+            bus_details = await self.client.async_get_buses(
+                [str(bus["vehicleId"]) for bus in enriched]
             )
             for bus in enriched:
                 detail = bus_details.get(str(bus["vehicleId"]))
                 if detail:
                     bus.update(detail)
 
+            trip_buses = [bus for bus in enriched if bus.get("tripId")]
+            trip_infos = await asyncio.gather(
+                *(
+                    self.client.async_get_trip(str(bus["tripId"]))
+                    for bus in trip_buses
+                ),
+                return_exceptions=True,
+            )
             active_routes: set[tuple[str, int]] = set()
             for bus, trip in zip(trip_buses, trip_infos):
                 if not isinstance(trip, dict):
                     _LOGGER.debug("Direction indisponible pour %s : %s", bus["tripId"], trip)
                     continue
-                line = (
-                    f"{bus.get('route_short_name') or ''} "
-                    f"{bus.get('route_long_name') or ''}"
+                line = str(
+                    bus.get("route_short_name") or bus.get("route_long_name") or ""
                 ).strip()
                 direction = trip.get("direction")
                 try:

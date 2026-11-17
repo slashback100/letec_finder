@@ -32,7 +32,7 @@ Aller dans `Paramètres` > `Appareils et services` > `Ajouter une intégration`,
 
 1. **Régions et rafraîchissement** : choisir les régions suivies et l'intervalle en secondes (10 à 900, 30 par défaut).
 2. **Lignes à suivre** : sélectionner les lignes voulues. Laisser vide pour suivre toutes les lignes des régions choisies.
-3. **Arrêts et alertes** : saisir un nom d'arrêt par ligne, par exemple `Rue Loumaye`. Les résultats de `arrets/search.php` sont proposés à l'étape suivante ; sélectionner les arrêts à suivre.
+3. **Arrêts et alertes** : saisir par ligne un nom d'arrêt (par exemple `Rue Loumaye`) ou directement son identifiant (par exemple `LJEloum1`). Les noms sont résolus via `arrets/search.php`, les identifiants via `stopdetail.php` ; les arrêts trouvés sont proposés à l'étape suivante.
 4. Les options permettent d'activer le capteur d'alertes, de choisir son filtrage (`all`, `regions` ou `stops`) et d'enrichir les entités bus avec les informations de trajet.
 
 ## À propos du jeton API

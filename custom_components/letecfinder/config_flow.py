@@ -53,6 +53,12 @@ from .const import (
 
 _LOGGER = logging.getLogger(__name__)
 
+_STOP_ID_RE = re.compile(r"^[A-Za-z][A-Za-z0-9]{2,}$")
+
+
+def _looks_like_stop_id(query: str) -> bool:
+    return bool(_STOP_ID_RE.fullmatch(query.strip()))
+
 
 def _region_options() -> list[SelectOptionDict]:
     return [
@@ -219,12 +225,39 @@ async def _line_options(hass: Any, token: str, regions: list[str]) -> list[Selec
     ]
 
 
+async def _resolve_stop_query(
+    client: LetecFinderApiClient, query: str
+) -> list[dict[str, Any]]:
+    if _looks_like_stop_id(query):
+        try:
+            detail = await client.async_get_stop_detail(query)
+        except LetecFinderError as err:
+            _LOGGER.debug("Arrêt %s introuvable par ID : %s", query, err)
+        else:
+            name = str(detail.get("stop_name") or "").strip()
+            if name:
+                stop_id = str(detail.get("stop_id") or query).strip() or query
+                return [
+                    {
+                        "stop_id": stop_id,
+                        "stop_name": name,
+                        "stop_lat": detail.get("stop_lat"),
+                        "stop_lon": detail.get("stop_lon"),
+                        "buses": [
+                            str(route)
+                            for route in (detail.get("filter_routes") or [])
+                        ],
+                    }
+                ]
+    return await client.async_search_stops(query)
+
+
 async def _search_stops(
     hass: Any, token: str, queries: list[str], regions: list[str]
 ) -> tuple[list[dict[str, Any]], str | None]:
     client = LetecFinderApiClient(async_get_clientsession(hass), token)
     results = await asyncio.gather(
-        *(client.async_search_stops(query) for query in queries),
+        *(_resolve_stop_query(client, query) for query in queries),
         return_exceptions=True,
     )
     if any(isinstance(result, LetecFinderAuthError) for result in results):

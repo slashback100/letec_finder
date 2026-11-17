@@ -30,7 +30,7 @@
           "enrich_buses": "Enrich buses with route data"
         },
         "data_description": {
-          "stop_queries": "Matching stops will be proposed in the next step. Leave empty to follow no stops.",
+          "stop_queries": "Enter a stop name or a stop ID (e.g. LJEloum1), one per line. Matching stops will be proposed in the next step. Leave empty to follow no stops.",
           "enrich_buses": "Add tripId and route information to bus entities, at the cost of extra API calls."
         }
       },
@@ -76,7 +76,7 @@
           "enrich_buses": "Enrich buses with route data"
         },
         "data_description": {
-          "stop_queries": "Matching stops will be proposed in the next step. Leave empty to keep the current stops."
+          "stop_queries": "Enter a stop name or a stop ID (e.g. LJEloum1), one per line. Matching stops will be proposed in the next step. Leave empty to keep the current stops."
         }
       },
       "stop_select": {
