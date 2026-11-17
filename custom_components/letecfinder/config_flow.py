@@ -134,8 +134,23 @@ def _stops_select_schema(
     )
 
 
+def _direction_summary(departures: list[dict[str, Any]]) -> str:
+    by_direction: dict[str, set[str]] = {}
+    for departure in departures:
+        direction = str(departure.get("direction_id") or "?")
+        destination = str(departure.get("destination") or "").strip()
+        if destination:
+            by_direction.setdefault(direction, set()).add(destination)
+    return " · ".join(
+        f"dir {direction} → {', '.join(sorted(destinations)[:2])}"
+        for direction, destinations in sorted(by_direction.items())
+    )
+
+
 def _stop_options(
-    results: list[dict[str, Any]], extra_ids: list[str]
+    results: list[dict[str, Any]],
+    extra_ids: list[str],
+    directions: dict[str, str] | None = None,
 ) -> list[SelectOptionDict]:
     options: list[SelectOptionDict] = []
     seen: set[str] = set()
@@ -146,10 +161,13 @@ def _stop_options(
         seen.add(stop_id)
         label = str(row.get("stop_name") or stop_id)
         buses = ", ".join(str(bus) for bus in (row.get("buses") or [])[:6])
+        details = [item for item in (buses, (directions or {}).get(stop_id)) if item]
         options.append(
             SelectOptionDict(
                 value=stop_id,
-                label=f"{label} ({stop_id}) — {buses}" if buses else f"{label} ({stop_id})",
+                label=f"{label} ({stop_id}) — {' · '.join(details)}"
+                if details
+                else f"{label} ({stop_id})",
             )
         )
     for stop_id in extra_ids:
@@ -248,6 +266,24 @@ async def _validate_stops(hass: Any, token: str, stop_ids: list[str]) -> str | N
     return None
 
 
+async def _stop_directions(
+    hass: Any, token: str, stop_ids: list[str]
+) -> dict[str, str]:
+    client = LetecFinderApiClient(async_get_clientsession(hass), token)
+    results = await asyncio.gather(
+        *(client.async_get_stop_schedule(stop) for stop in stop_ids[:30]),
+        return_exceptions=True,
+    )
+    directions: dict[str, str] = {}
+    for stop_id, schedule in zip(stop_ids[:30], results):
+        if not isinstance(schedule, dict):
+            continue
+        summary = _direction_summary(list(schedule.get("departures") or []))
+        if summary:
+            directions[stop_id] = summary
+    return directions
+
+
 class LetecFinderConfigFlow(ConfigFlow, domain=DOMAIN):
     VERSION = 1
 
@@ -338,7 +374,12 @@ class LetecFinderConfigFlow(ConfigFlow, domain=DOMAIN):
         errors: dict[str, str] = {}
         previous = parse_csv(self._config.get(CONF_STOP_IDS))
         found_ids = [str(row.get("stop_id")) for row in self._search_results]
-        options = _stop_options(self._search_results, previous)
+        directions = await _stop_directions(
+            self.hass,
+            self._config.get(CONF_API_TOKEN, DEFAULT_TOKEN),
+            found_ids,
+        )
+        options = _stop_options(self._search_results, previous, directions)
         if user_input is not None:
             selected = parse_csv(user_input.get(CONF_STOP_IDS))
             custom = [stop_id for stop_id in selected if stop_id not in found_ids]
@@ -447,7 +488,12 @@ class LetecFinderOptionsFlow(OptionsFlow):
         errors: dict[str, str] = {}
         previous = parse_csv(self._config.get(CONF_STOP_IDS))
         found_ids = [str(row.get("stop_id")) for row in self._search_results]
-        options = _stop_options(self._search_results, previous)
+        directions = await _stop_directions(
+            self.hass,
+            self._config.get(CONF_API_TOKEN, DEFAULT_TOKEN),
+            found_ids,
+        )
+        options = _stop_options(self._search_results, previous, directions)
         if user_input is not None:
             selected = parse_csv(user_input.get(CONF_STOP_IDS))
             custom = [stop_id for stop_id in selected if stop_id not in found_ids]

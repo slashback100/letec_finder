@@ -28,6 +28,7 @@ async def async_setup_entry(
     entities: list[SensorEntity] = [LetecFinderBusesSensor(coordinator, entry.entry_id)]
     if entry.data.get(CONF_INCLUDE_ALERTS, DEFAULT_INCLUDE_ALERTS):
         entities.append(LetecFinderAlertsSensor(coordinator, entry.entry_id))
+    entities.append(LetecFinderRoutesSensor(coordinator, entry.entry_id))
     entities.extend(
         LetecFinderStopSensor(coordinator, entry.entry_id, stop_id)
         for stop_id in parse_csv(entry.data.get(CONF_STOP_IDS))
@@ -104,6 +105,28 @@ class LetecFinderAlertsSensor(LetecFinderBaseSensor):
             "zones": alerts.get("zones", []),
             "reports_by_category": counts,
         }
+
+
+class LetecFinderRoutesSensor(LetecFinderBaseSensor):
+    _attr_icon = "mdi:map-marker-path"
+
+    def __init__(self, coordinator: LetecFinderCoordinator, entry_id: str) -> None:
+        super().__init__(coordinator, entry_id)
+        self._attr_unique_id = f"{entry_id}_routes"
+        self._attr_name = "Itinéraires"
+        self._attr_native_unit_of_measurement = "tracé"
+
+    @property
+    def native_value(self) -> int | None:
+        if not self.coordinator.data:
+            return None
+        return len(self.coordinator.data.get("routes", {}).get("features", []))
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        if not self.coordinator.data:
+            return {}
+        return {"geojson": self.coordinator.data.get("routes", {})}
 
 
 class LetecFinderStopSensor(LetecFinderBaseSensor):

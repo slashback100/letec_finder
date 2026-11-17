@@ -1,0 +1,97 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Regions and refresh",
+        "description": "Choose the TEC regions to follow and how often the APIs are queried.",
+        "data": {
+          "regions": "Regions",
+          "scan_interval": "Refresh interval (seconds)"
+        },
+        "data_description": {
+          "regions": "Several regions can be selected.",
+          "scan_interval": "Between 10 and 900 seconds. 30 seconds is a good value."
+        }
+      },
+      "lines": {
+        "title": "Lines to follow",
+        "description": "Leave empty to follow all lines in the selected regions. You can enter a line that is not in the list.",
+        "data": {
+          "lines": "Lines (numbers)"
+        }
+      },
+      "stops": {
+        "title": "Stops and alerts",
+        "description": "Enter several stop names, one per line (e.g. Rue Loumaye, then Place St-Lambert).",
+        "data": {
+          "stop_queries": "Stop names (one per line)",
+          "include_alerts": "Enable network alerts",
+          "alerts_mode": "Filter alerts",
+          "enrich_buses": "Enrich buses with route data"
+        },
+        "data_description": {
+          "stop_queries": "Matching stops will be proposed in the next step. Leave empty to follow no stops.",
+          "enrich_buses": "Add tripId and route information to bus entities, at the cost of extra API calls."
+        }
+      },
+      "stop_select": {
+        "title": "Choose stops",
+        "description": "Select the stops to follow from the search results.",
+        "data": {
+          "stop_ids": "Stops found"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Cannot connect to the Letec Finder API.",
+      "invalid_auth": "Authentication rejected by the Letec Finder API.",
+      "invalid_stop": "One or more stop IDs could not be found.",
+      "no_stops_found": "No stops found for this search."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Regions and refresh",
+        "description": "Change the regions followed and the refresh interval.",
+        "data": {
+          "regions": "Regions",
+          "scan_interval": "Refresh interval (seconds)"
+        }
+      },
+      "lines": {
+        "title": "Lines to follow",
+        "description": "Leave empty to follow all lines.",
+        "data": {
+          "lines": "Lines (numbers)"
+        }
+      },
+      "stops": {
+        "title": "Stops and alerts",
+        "description": "Enter several stop names, one per line (e.g. Rue Loumaye, then Place St-Lambert).",
+        "data": {
+          "stop_queries": "Stop names (one per line)",
+          "include_alerts": "Enable network alerts",
+          "alerts_mode": "Filter alerts",
+          "enrich_buses": "Enrich buses with route data"
+        },
+        "data_description": {
+          "stop_queries": "Matching stops will be proposed in the next step. Leave empty to keep the current stops."
+        }
+      },
+      "stop_select": {
+        "title": "Choose stops",
+        "description": "Select the stops to follow from the search results.",
+        "data": {
+          "stop_ids": "Stops found"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Cannot connect to the Letec Finder API.",
+      "invalid_auth": "Authentication rejected by the Letec Finder API.",
+      "invalid_stop": "One or more stop IDs could not be found.",
+      "no_stops_found": "No stops found for this search."
+    }
+  }
+}

@@ -11,7 +11,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from .api import LetecFinderApiClient
+from .api import LetecFinderApiClient, LetecFinderError
 from .const import (
     CONF_ALERTS_MODE,
     CONF_ENRICH_BUSES,
@@ -25,6 +25,7 @@ from .const import (
     normalize_line,
     parse_csv,
 )
+from .geojson import paths_to_geojson
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -38,6 +39,7 @@ class LetecFinderCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         self.client = client
         self.config_entry = entry
         self._stop_details: dict[str, dict[str, Any]] = {}
+        self._routes: dict[tuple[str, int], dict[str, Any]] = {}
         super().__init__(
             hass,
             _LOGGER,
@@ -142,18 +144,64 @@ class LetecFinderCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         elif isinstance(reports_payload, Exception):
             _LOGGER.debug("Alertes indisponibles : %s", reports_payload)
 
+        routes: dict[str, Any] = {"type": "FeatureCollection", "features": []}
         if enrich and buses:
-            vehicle_ids = [str(bus["vehicleId"]) for bus in buses[:MAX_BUS_DETAILS]]
-            bus_details = await self.client.async_get_buses(vehicle_ids)
-            for bus in buses:
+            enriched = buses[:MAX_BUS_DETAILS]
+            trip_buses = [bus for bus in enriched if bus.get("tripId")]
+            bus_details, trip_infos = await asyncio.gather(
+                self.client.async_get_buses(
+                    [str(bus["vehicleId"]) for bus in enriched]
+                ),
+                asyncio.gather(
+                    *(
+                        self.client.async_get_trip(str(bus["tripId"]))
+                        for bus in trip_buses
+                    ),
+                    return_exceptions=True,
+                ),
+            )
+            for bus in enriched:
                 detail = bus_details.get(str(bus["vehicleId"]))
                 if detail:
                     bus.update(detail)
+
+            active_routes: set[tuple[str, int]] = set()
+            for bus, trip in zip(trip_buses, trip_infos):
+                if not isinstance(trip, dict):
+                    _LOGGER.debug("Direction indisponible pour %s : %s", bus["tripId"], trip)
+                    continue
+                line = (
+                    f"{bus.get('route_short_name') or ''} "
+                    f"{bus.get('route_long_name') or ''}"
+                ).strip()
+                direction = trip.get("direction")
+                try:
+                    key = (line, int(direction))
+                except (TypeError, ValueError):
+                    continue
+                active_routes.add(key)
+                if key not in self._routes:
+                    try:
+                        paths = await self.client.async_get_itinerary(line, key[1])
+                    except LetecFinderError as err:
+                        _LOGGER.debug("Tracé indisponible pour %s : %s", line, err)
+                        continue
+                    self._routes[key] = paths_to_geojson(
+                        paths,
+                        {"line": line, "direction": key[1]},
+                    )
+            routes["features"] = [
+                feature
+                for key, route in self._routes.items()
+                if key in active_routes
+                for feature in route["features"]
+            ]
 
         return {
             "buses": buses,
             "stops": stop_data,
             "alerts": alerts,
+            "routes": routes,
             "agencies": agencies,
             "lines": parse_csv(data.get(CONF_LINES)),
         }

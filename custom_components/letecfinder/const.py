@@ -8,6 +8,7 @@ DOMAIN = "letecfinder"
 PLATFORMS = [Platform.DEVICE_TRACKER, Platform.SENSOR]
 
 API_BASE = "https://letecfinder.be/map/api"
+API_ITINERAIRE = "https://letecfinder.be/map/assets/api/itineraire.php"
 DEFAULT_TOKEN = "token1"
 DEFAULT_SCAN_INTERVAL = 30
 MIN_SCAN_INTERVAL = 10

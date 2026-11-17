@@ -10,6 +10,7 @@ Intégration personnalisée qui expose les données des API publiques de [letecf
 - Filtre par régions TEC et par lignes.
 - Fréquence de rafraîchissement configurable.
 - Recherche d'un arrêt par son nom lors de la configuration.
+- Conversion des tracés `itineraire.php` en GeoJSON, exposés par un capteur `Itinéraires` (alimenté quand l'enrichissement des bus est activé).
 
 Les régions disponibles sont : `L` (Liège - Verviers), `N` (Namur), `X` (Luxembourg), `H` (Hainaut), `C` (Charleroi) et `B` (Brabant wallon).
 
@@ -47,10 +48,17 @@ Le jeton est donc appliqué automatiquement à ces deux derniers endpoints.
 
 ## Entités créées
 
-- Un `device_tracker` nommé `Bus <vehicle_id>` par bus actif, avec latitude, longitude, cap, vitesse, ligne et compagnie.
+- Un `device_tracker` nommé `Bus <ligne> (<vehicle_id>)` par bus actif, avec latitude, longitude, cap, vitesse, ligne et compagnie.
 - `Bus suivis` : nombre de bus actuellement vus.
 - `Alertes réseau` : nombre d'alertes et zones associées, si activé.
 - Un capteur par arrêt, nommé d'après l'arrêt, avec les prochains départs, la destination et le temps d'attente.
+- `Itinéraires` : nombre de tracés suivis et attribut `geojson` (FeatureCollection de LineString, vide tant que l'enrichissement des bus est désactivé).
+
+## Affichage des itinéraires
+
+L'API `itineraire.php` renvoie des points `[longitude, latitude]` dans `geometry.paths`. L'intégration les convertit en GeoJSON (avec simplification des tracés), met le résultat en cache une seule fois par ligne et par direction, puis l'expose dans l'attribut `geojson` du capteur `Itinéraires`.
+
+La carte `map` native de Home Assistant ne sait pas dessiner de polylignes. Pour afficher les tracés, utiliser la carte custom [map-card](https://github.com/nathan-gs/ha-map-card) (`type: custom:map-card`) avec un exemple dans `examples/lovelace/letecfinder.yaml`.
 
 ## Options
 

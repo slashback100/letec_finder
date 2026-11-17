@@ -8,7 +8,7 @@ from typing import Any
 
 import aiohttp
 
-from .const import API_BASE, DEFAULT_TOKEN
+from .const import API_BASE, API_ITINERAIRE, DEFAULT_TOKEN
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -34,7 +34,7 @@ class LetecFinderApiClient:
         }
 
     async def _get(self, path: str, params: dict[str, Any] | None = None) -> Any:
-        url = f"{API_BASE}/{path.lstrip('/')}"
+        url = path if path.startswith("http") else f"{API_BASE}/{path.lstrip('/')}"
         try:
             async with self._session.get(
                 url, params=params, headers=self.headers, timeout=aiohttp.ClientTimeout(total=15)
@@ -91,11 +91,26 @@ class LetecFinderApiClient:
             raise LetecFinderError(f"Réponse stop-schedule inattendue pour {stop_id}")
         return data
 
-    async def async_get_trip_schedule(self, trip_id: str) -> list[dict[str, Any]]:
+    async def async_get_trip(self, trip_id: str) -> dict[str, Any]:
         data = await self._get("horaire/schedule", {"trip_id": trip_id})
         if not isinstance(data, dict):
             raise LetecFinderError("Réponse horaire/schedule inattendue")
-        return list(data.get("schedule") or [])
+        return data
+
+    async def async_get_trip_schedule(self, trip_id: str) -> list[dict[str, Any]]:
+        return list((await self.async_get_trip(trip_id)).get("schedule") or [])
+
+    async def async_get_itinerary(
+        self, line: str, direction: int | str
+    ) -> list[list[float]]:
+        data = await self._get(
+            API_ITINERAIRE, {"ligne": line, "direction": direction}
+        )
+        if not isinstance(data, dict):
+            raise LetecFinderError("Réponse itineraire inattendue")
+        geometry = data.get("geometry") or {}
+        paths = geometry.get("paths") or []
+        return [list(path) for path in paths if isinstance(path, list)]
 
     async def async_get_buses(self, vehicle_ids: list[str]) -> dict[str, dict[str, Any]]:
         results = await asyncio.gather(

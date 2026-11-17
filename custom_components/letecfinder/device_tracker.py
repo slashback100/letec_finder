@@ -51,8 +51,8 @@ class LetecFinderBusTracker(CoordinatorEntity, TrackerEntity):
         self._vehicle_id = vehicle_id
         self._lat = 0.0
         self._lng = 0.0
+        self._line = ""
         self._attr_unique_id = f"{entry_id}_bus_{vehicle_id}"
-        self._attr_name = f"Bus {vehicle_id}"
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, entry_id)},
             name="Letec Finder",
@@ -74,11 +74,20 @@ class LetecFinderBusTracker(CoordinatorEntity, TrackerEntity):
         bus = self._bus
         if not bus:
             return
+        line = str(bus.get("route_short_name") or "").strip()
+        if line:
+            self._line = line
         try:
             self._lat = float(bus.get("latitude"))
             self._lng = float(bus.get("longitude"))
         except (TypeError, ValueError):
             pass
+
+    @property
+    def name(self) -> str:
+        if self._line:
+            return f"Bus {self._line} ({self._vehicle_id})"
+        return f"Bus {self._vehicle_id}"
 
     @property
     def available(self) -> bool:
