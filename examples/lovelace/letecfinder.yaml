@@ -1,0 +1,86 @@
+- type: vertical-stack
+  cards:
+    - type: entities
+      title: Letec Finder
+      state_color: true
+      entities:
+        - entity: sensor.letec_finder_bus_suivis
+          name: Bus suivis
+          icon: mdi:bus-clock
+        - entity: sensor.letec_finder_alertes_reseau
+          name: Alertes réseau
+          icon: mdi:alert-outline
+
+    - type: map
+      title: Bus et arrêts suivis
+      aspect_ratio: 65%
+      default_zoom: 11
+      hours_to_show: 1
+      show_all: true
+
+    - type: custom:map-card
+      title: Itinéraires des bus suivis
+      entities:
+        - entity: sensor.letec_finder_itineraire
+          geojson:
+            attribute: geojson
+            color: "#1565c0"
+            weight: 3
+            hide_marker: true
+
+    - type: markdown
+      title: Prochain bus par arrêt
+      content: |
+        {% set ns = namespace(stops=[]) %}
+        {% for s in expand(integration_entities('letecfinder')) %}
+        {% if s.attributes.stop_id is defined and s.state not in ['unavailable', 'unknown', 'none'] %}
+        {% set a = s.attributes %}
+        {% set ns.stops = ns.stops + [{'name': a.stop_name or s.entity_id, 'stop_id': a.stop_id, 'min': s.state | int(0), 'line': a.next_line or '?', 'dest': a.next_destination or '', 'time': a.next_departure_time or '', 'departures': a.departures or []}] %}
+        {% endif %}
+        {% endfor %}
+        {% if ns.stops %}
+        {% for r in ns.stops | sort(attribute='min') %}
+        **{{ r.name }}** ({{ r.stop_id }}) — **{{ r.min }} min**
+        - {{ r.line }} → {{ r.dest }}{% if r.time %} — {{ r.time }}{% endif %}
+        {% for d in r.departures[1:3] %}
+        - plus tard : {{ d.line }} → {{ d.destination }} — {{ d.in_minutes }} min ({{ d.departure_time }})
+        {% endfor %}
+        {% endfor %}
+        {% else %}
+        Aucun arrêt suivi ou aucun passage à venir.
+        {% endif %}
+
+    - type: markdown
+      title: Bus en service
+      entity_id: sensor.letec_finder_bus_suivis
+      content: |
+        {% set ns = namespace(buses=[]) %}
+        {% for s in expand(integration_entities('letecfinder')) %}
+        {% if s.entity_id.startswith('device_tracker.') and s.attributes.vehicle_id is defined %}
+        {% set a = s.attributes %}
+        {% set ns.buses = ns.buses + [{'line': a.line or '?', 'id': a.vehicle_id, 'name': a.route_long_name or '', 'lat': a.latitude, 'lon': a.longitude, 'speed': a.speed}] %}
+        {% endif %}
+        {% endfor %}
+        {% if ns.buses %}
+        {% for b in ns.buses | sort(attribute='line') %}
+        - **{{ b.line }}** — {{ b.name }} ({{ b.id }}) — {{ b.lat }}, {{ b.lon }}{% if b.speed %} — {{ b.speed }} km/h{% endif %}
+        {% endfor %}
+        {% else %}
+        Aucun bus suivi actuellement.
+        {% endif %}
+
+    - type: markdown
+      title: Alertes réseau
+      content: |
+        {% set alerts = expand(integration_entities('letecfinder')) | selectattr('entity_id', 'search', '_alertes_reseau') | list %}
+        {% if alerts and alerts[0].attributes.reports %}
+        {% set ns = namespace(rows=[]) %}
+        {% for r in alerts[0].attributes.reports %}
+        {% set ns.rows = ns.rows + [{'cat': r.category or 'autre', 'stop': r.stop_name or '', 'comment': r.comment or '', 'expire': r.expires_at | int(0)}] %}
+        {% endfor %}
+        {% for r in ns.rows | sort(attribute='expire') %}
+        - **{{ r.cat }}** — {{ r.stop }}{% if r.comment %} — {{ r.comment }}{% endif %}
+        {% endfor %}
+        {% else %}
+        Aucune alerte.
+        {% endif %}
