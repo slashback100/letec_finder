@@ -23,6 +23,7 @@ from homeassistant.helpers.selector import (
     SelectSelectorConfig,
     TextSelector,
     TextSelectorConfig,
+    TextSelectorType,
 )
 
 from .api import LetecFinderApiClient, LetecFinderAuthError, LetecFinderError
@@ -110,7 +111,7 @@ def _stops_schema(
     return vol.Schema(
         {
             vol.Required(CONF_STOP_QUERIES, default=queries): TextSelector(
-                TextSelectorConfig()
+                TextSelectorConfig(type=TextSelectorType.TEXT, multiline=True)
             ),
             vol.Required(CONF_INCLUDE_ALERTS, default=include_alerts): BooleanSelector(),
             vol.Required(CONF_ALERTS_MODE, default=alerts_mode): SelectSelector(

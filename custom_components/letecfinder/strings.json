@@ -22,12 +22,12 @@
       },
       "stops": {
         "title": "Arrêts et alertes",
-        "description": "Saisissez le nom de chaque arrêt recherché, un par ligne (ex. Rue Loumaye).",
+        "description": "Saisissez plusieurs noms d'arrêts, un par ligne (ex. Rue Loumaye, puis Place St-Lambert).",
         "data": {
-          "stop_queries": "Noms d'arrêts à rechercher",
-          "include_alerts": "Activer le capteur d'alertes réseau",
-          "alerts_mode": "Filtrage des alertes",
-          "enrich_buses": "Récupérer le trajet des bus suivis (requêtes supplémentaires)"
+          "stop_queries": "Noms des arrêts (un par ligne)",
+          "include_alerts": "Activer les alertes réseau",
+          "alerts_mode": "Filtrer les alertes",
+          "enrich_buses": "Enrichir les bus avec le trajet"
         },
         "data_description": {
           "stop_queries": "Les arrêts correspondants seront proposés à l'étape suivante. Laissez vide pour ne suivre aucun arrêt.",
@@ -68,12 +68,12 @@
       },
       "stops": {
         "title": "Arrêts et alertes",
-        "description": "Saisissez le nom de chaque arrêt recherché, un par ligne (ex. Rue Loumaye).",
+        "description": "Saisissez plusieurs noms d'arrêts, un par ligne (ex. Rue Loumaye, puis Place St-Lambert).",
         "data": {
-          "stop_queries": "Noms d'arrêts à rechercher",
-          "include_alerts": "Activer le capteur d'alertes réseau",
-          "alerts_mode": "Filtrage des alertes",
-          "enrich_buses": "Récupérer le trajet des bus suivis"
+          "stop_queries": "Noms des arrêts (un par ligne)",
+          "include_alerts": "Activer les alertes réseau",
+          "alerts_mode": "Filtrer les alertes",
+          "enrich_buses": "Enrichir les bus avec le trajet"
         },
         "data_description": {
           "stop_queries": "Les arrêts correspondants seront proposés à l'étape suivante. Laissez vide pour conserver les arrêts actuels."
