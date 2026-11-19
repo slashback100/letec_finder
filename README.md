@@ -1,6 +1,6 @@
 # Letec Finder pour Home Assistant
 
-Intégration personnalisée qui expose les données des API publiques de [letecfinder.be](https://letecfinder.be) dans Home Assistant.
+Intégration qui expose les données des API publiques de [letecfinder.be](https://letecfinder.be) dans Home Assistant.
 
 ## Fonctionnalités
 
@@ -16,9 +16,9 @@ Les régions disponibles sont : `L` (Liège - Verviers), `N` (Namur), `X` (Luxem
 
 ## Installation
 
-### Via HACS
+### Via HACS/Marketplace
 
-1. Dans HACS, ouvrir `Intégrations`, puis le menu `...` et choisir `Ajouter un dépôt personnalisé`.
+1. Dans HACS/Marketplace, ouvrir `Intégrations`, puis le menu `...` et choisir `Ajouter un dépôt personnalisé`.
 2. Saisir `https://github.com/slashback100/letec_finder` comme URL, avec le type `Integration`.
 3. Installer `Letec Finder`, puis redémarrer Home Assistant.
 
@@ -35,17 +35,6 @@ Aller dans `Paramètres` > `Appareils et services` > `Ajouter une intégration`,
 3. **Arrêts et alertes** : saisir par ligne un nom d'arrêt (par exemple `Rue Loumaye`) ou directement son identifiant (par exemple `LJEloum1`). Les noms sont résolus via `arrets/search.php`, les identifiants via `stopdetail.php` ; les arrêts trouvés sont proposés à l'étape suivante.
 4. Les options permettent d'activer le capteur d'alertes, de choisir son filtrage (`all`, `regions` ou `stops`) et d'enrichir les entités bus avec les informations de trajet.
 
-## À propos du jeton API
-
-Aucun jeton n'est demandé dans l'interface. L'intégration utilise en interne `token1`, la valeur publique employée par le site letecfinder.be.
-
-Toutes les API ne se comportent pas de la même manière :
-
-- `arrets/search.php`, `stopdetail.php`, `stop-schedule.php` et `reports.php` répondent sans en-tête d'authentification.
-- `bus/position` et `bus/lines` renvoient `HTTP 401` sans l'en-tête `Authorization: Bearer token1`.
-
-Le jeton est donc appliqué automatiquement à ces deux derniers endpoints.
-
 ## Entités créées
 
 - Un `device_tracker` nommé `Bus <ligne> (<vehicle_id>)` par bus actif, avec latitude, longitude, cap, vitesse, ligne et compagnie.
@@ -60,7 +49,7 @@ L'API `itineraire.php` renvoie des points `[longitude, latitude]` dans `geometry
 
 La carte `map` native de Home Assistant ne sait pas dessiner de polylignes. Pour afficher les tracés, utiliser la carte custom [map-card](https://github.com/nathan-gs/ha-map-card) (`type: custom:map-card`) avec un exemple dans `examples/lovelace/letecfinder.yaml`.
 
-Le capteur `Itinéraires` n'a pas de latitude/longitude : dans sa configuration `entities`, renseigner `geojson.hide_marker: true` **et** `focus_on_fit: false` (sinon map-card cherche une position pour cadrer la carte), puis définir le centre avec `x` (latitude) et `y` (longitude) au niveau de la carte, ainsi que `zoom`. Attention : dans le code de map-card, `x` est la latitude et `y` la longitude (contrairement à sa documentation) ; mettre ces valeurs à l'envers centre la carte dans l'océan. Les clés `x` et `y` doivent être entourées de guillemets : en YAML, `y` nu est interprété comme `true` par Home Assistant.
+Le capteur `Itinéraires` n'a pas de latitude/longitude : dans sa configuration `entities`, renseigner `geojson.hide_marker: true` **et** `focus_on_fit: false` (sinon map-card cherche une position pour cadrer la carte), puis définir le centre avec `x` (latitude) et `y` (longitude) au niveau de la carte, ainsi que `zoom`. Attention : dans le code de map-card, `x` est la latitude et `y` la longitude ; mettre ces valeurs à l'envers centre la carte dans l'océan. Les clés `x` et `y` doivent être entourées de guillemets : en YAML, `y` nu est interprété comme `true` par Home Assistant.
 
 ## Options
 
