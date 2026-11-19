@@ -14,6 +14,10 @@ Intégration qui expose les données des API publiques de [letecfinder.be](https
 
 Les régions disponibles sont : `L` (Liège - Verviers), `N` (Namur), `X` (Luxembourg), `H` (Hainaut), `C` (Charleroi) et `B` (Brabant wallon).
 
+<img width="580" height="330" alt="image" src="https://github.com/user-attachments/assets/c60fbfa3-2e62-47df-b05f-6d84e4c3655a" />
+<img width="827" height="460" alt="image" src="https://github.com/user-attachments/assets/86a01f6c-c25d-4a98-8767-14f6bf687c00" />
+
+
 ## Installation
 
 ### Via HACS/Marketplace
