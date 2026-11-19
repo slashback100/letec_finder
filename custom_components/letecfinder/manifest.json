@@ -1,13 +1,14 @@
 {
   "domain": "letecfinder",
   "name": "Letec Finder",
+  "categories": ["vehicles_transport.public_transport"],
   "codeowners": ["@slashback100"],
   "config_flow": true,
   "dependencies": [],
   "documentation": "https://github.com/slashback100/letec_finder#readme",
-  "issue_tracker": "https://github.com/slashback100/letec_finder/issues",
   "integration_type": "hub",
   "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/slashback100/letec_finder/issues",
   "requirements": [],
   "version": "1.0.0"
 }
