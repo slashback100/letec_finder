@@ -94,8 +94,6 @@ class LetecFinderCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
         if isinstance(raw.get("positions"), Exception):
             raise UpdateFailed(f"Impossible de récupérer les positions : {raw['positions']}")
-        if not stop_ids and not include_alerts:
-            raise UpdateFailed("Aucune donnée à récupérer (aucun arrêt et alertes désactivées)")
 
         positions = raw["positions"] if isinstance(raw.get("positions"), list) else []
         buses = [
