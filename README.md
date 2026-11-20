@@ -20,7 +20,15 @@ Les régions disponibles sont : `L` (Liège - Verviers), `N` (Namur), `X` (Luxem
 
 ## Installation
 
-### Via HACS/Marketplace
+### Via HACS
+
+1. Dans HACS, ouvrir `Intégrations`.
+2. Rechercher `Letec Finder` dans le catalogue et installer l'intégration.
+3. Redémarrer Home Assistant.
+
+### Via HACS, avec un dépôt personnalisé
+
+Si `Letec Finder` n'apparaît pas dans le catalogue HACS :
 
 1. Dans HACS/Marketplace, ouvrir `Intégrations`, puis le menu `...` et choisir `Ajouter un dépôt personnalisé`.
 2. Saisir `https://github.com/slashback100/letec_finder` comme URL, avec le type `Integration`.
@@ -54,6 +62,8 @@ L'API `itineraire.php` renvoie des points `[longitude, latitude]` dans `geometry
 La carte `map` native de Home Assistant ne sait pas dessiner de polylignes. Pour afficher les tracés, utiliser la carte custom [map-card](https://github.com/nathan-gs/ha-map-card) (`type: custom:map-card`) avec un exemple dans `examples/lovelace/letecfinder.yaml`.
 
 Le capteur `Itinéraires` n'a pas de latitude/longitude : dans sa configuration `entities`, renseigner `geojson.hide_marker: true` **et** `focus_on_fit: false` (sinon map-card cherche une position pour cadrer la carte), puis définir le centre avec `x` (latitude) et `y` (longitude) au niveau de la carte, ainsi que `zoom`. Attention : dans le code de map-card, `x` est la latitude et `y` la longitude ; mettre ces valeurs à l'envers centre la carte dans l'océan. Les clés `x` et `y` doivent être entourées de guillemets : en YAML, `y` nu est interprété comme `true` par Home Assistant.
+
+L'exemple force le thème clair avec `theme_mode: light` et utilise le fond OpenStreetMap par défaut de map-card, sans clé API. Si votre carte apparaît en satellite, vérifiez qu'aucun `tile_layer_url` (par exemple Esri World Imagery) n'est défini dans la carte ou dans le thème Home Assistant.
 
 ## Options
 
